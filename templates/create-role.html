@@ -1,0 +1,128 @@
+
+{% macro form(action,text='',permissions=[],rid_last_index='R-XXXXX') -%}
+
+<form action="{{ name }}">
+  <h1>Fancy Inputs</h1>
+  <div class="row">
+    <input type="checkbox" name="fancy-checkbox" id="fancy-checkbox"/>
+    <label for="fancy-checkbox">Checkbox</label>
+  </div>
+  <div class="row col-3">
+  <div class="cell">
+   <p class="badge">
+       {{ rid_last_index }}
+   </p>
+    </div>
+       <div class="cell" >
+           <p class="badge">
+           <span>R-</span> <span id="full_rid">
+       </span>
+           </p>
+       </div>
+        <div class="input-text-section cell" id="in_full_rid">
+            <p class="line-item">
+                <input type="text" name="role2" id="role2" onkeyup="updateText(this, 'full_rid')"/>
+                <label for="role2">Name</label>
+</p>        </div>
+
+  </div>
+  <div class="row">
+    <textarea name="fancy-textarea" id="fancy-textarea" required></textarea>
+    <label for="fancy-textarea">Description</label>
+  </div>
+<div class="row col-2 pad-20">
+     <div style="flex-direction: column; display: flex; margin-left: 50px;">
+<div    class="cell" style="max-height: 300px; display: flex; flex-direction: row; vertical-align: center" >
+    <p>
+    <input type="radio" name="fancy-radio4" id="fancy-radio-3"/>
+    <label for="fancy-radio-3">Room</label>
+        </p>
+
+    <p class="badge font-small" style="" >Room</p>
+</div>
+    <div class="cell" style="max-height: 300px; display: flex; flex-direction: row; ">
+        <p>
+    <input type="radio" name="fancy-radio4" id="fancy-radio-4"/>
+    <label for="fancy-radio-4">Global</label>
+        </p>
+        <span class="badge font-small">Global</span>
+</div>
+
+   </div>
+
+    <div class="cell">
+          <h3>  <label for="role_type">Choose Role Type:</label> </h3>
+        <p class="badge ">
+        <input id="lista" list="role_type" name="role_type">
+                <datalist id="role_type">
+                  <option value="Internet Explorer">
+                  <option value="Firefox">
+                  <option value="Chrome">
+                </datalist>
+        </p>
+
+</div>
+</div>
+
+<div class="row col-2">
+    <div id="permissions-row" class="row pad-20"
+         style="max-height: 300px; overflow:scroll;">
+    <select id="error-type" multiple>
+    <input type="text" id="myInput"
+           onkeyup="searchList('permissions-row')" placeholder="Search Permissions">
+
+      {%  for permission in permissions %}
+      <li>
+          <i class="bi-x-circle"
+             onmouseenter="  this.classList.replace('bi-x-circle','bi-x-circle-fill'); this.classList.toggle('red')"
+             onmouseleave="this.classList.toggle('red');  this.classList.replace('bi-x-circle-fill','bi-x-circle');"
+          onclick="deleteParent(this)"></i>
+          <i class="bi-circle" onmouseenter="this.classList.replace('bi-circle','bi-circle-fill')"
+             onmouseleave=" if (!this.classList.contains('blue')) this.classList.replace('bi-circle-fill', 'bi-circle')"
+            onclick="this.classList.add('bi-circle-fill'); this.classList.toggle('blue'); this.classList.remove('bi-circle'); "></i>
+          {{ permission['PID'] +" "+permission['name'] }}</li>
+      {% endfor %}
+
+  </div>
+  <div class="input-text-section">
+    <textarea name="role_label" id="role_label" ></textarea>
+    <label for="role_label">Role label</label>
+  </div>
+</div>
+  <div class="row pad-20">
+    <input type="radio" name="fancy-radio" id="fancy-radio-3"/>
+    <label for="fancy-radio-3">Radio</label>
+    <br />
+    <input type="radio" name="fancy-radio" id="fancy-radio-4"/>
+    <label for="fancy-radio-4">Radio</label>
+        <label for="cars">Choose a car:</label>
+          <select name="cars" id="cars" multiple>
+            <option value="volvo">Volvo</option>
+            <option value="saab">Saab</option>
+            <option value="opel">Opel</option>
+            <option value="audi">Audi</option>
+          </select>
+  </div>
+
+  <div class="row">
+    <input type="radio" name="fancy-radio" id="fancy-radio-1"/>
+    <label for="fancy-radio-1">Radio</label>
+
+    <input type="radio" name="fancy-radio" id="fancy-radio-2"/>
+    <label for="fancy-radio-2">Radio</label>
+  </div>
+
+  <div class="row">
+    <input type="text" name="fancy-text" id="fancy-text"/>
+    <label for="fancy-text">Name</label>
+  </div>
+
+
+
+  <button type="submit" tabindex="0">Submit</button>
+</form>
+
+{%- endmacro %}
+
+</body>
+</html>
