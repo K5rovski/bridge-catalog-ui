@@ -1,6 +1,9 @@
 release/
 *.pyc
 
+.idea/
+venv/
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
