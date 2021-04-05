@@ -2,34 +2,10 @@
 <html lang="en">
 <head>
     <title> {{ title }}</title>
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
-	<link href="{{ url_for('static', filename="css/index.css") }}" rel="stylesheet">
-	<link href="{{ url_for('static', filename="css/bootstrap-icons.css") }}" rel="stylesheet">
-        <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
-
-    <script type="text/javascript" src="{{ url_for('static', filename="js/index.js") }}"></script>
-{% import 'create-role.html' as create_role %}
-
 </head>
 <body>
-	<h1>{{ title }}</h1>
-	
-	{% if app_version %}
-	<p>Version {{ app_version }}</p>
-	{% endif %}
 
-	{% if flask_debug %}
-	<p class="warning">Flask is in debug mode. This is not safe for production.</p>
-	{% endif %}
-
-	{% if enable_cool_new_feature %}
-	<div id="box">
-		Our cool new feature, controlled by the <pre>ENABLE_COOL_NEW_FEATURE</pre> flag in the environment.
-	</div>
-
-	{% endif %}
-
-<div>{{ create_role.form('username', permissions=permissions) }}</div>
+<div>I am empty...</div>
 
 </body>
 </html>

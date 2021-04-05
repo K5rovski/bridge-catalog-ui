@@ -1,49 +1,47 @@
+{% include 'header.html' %}
 
-{% macro form(action,text='',permissions=[],rid_last_index='R-XXXXX') -%}
+<form method="POST">
+  <h1>Create/Edit Role</h1>
 
-<form action="{{ name }}">
-  <h1>Fancy Inputs</h1>
-  <div class="row">
-    <input type="checkbox" name="fancy-checkbox" id="fancy-checkbox"/>
-    <label for="fancy-checkbox">Checkbox</label>
-  </div>
   <div class="row col-3">
   <div class="cell">
    <p class="badge">
-       {{ rid_last_index }}
+       {{ rid_latest_index }}
    </p>
     </div>
        <div class="cell" >
            <p class="badge">
-           <span>R-</span> <span id="full_rid">
+           <span>{{ rid_latest_index }}:</span> <span id="full_rid">
        </span>
            </p>
        </div>
         <div class="input-text-section cell" id="in_full_rid">
             <p class="line-item">
-                <input type="text" name="role2" id="role2" onkeyup="updateText(this, 'full_rid')"/>
-                <label for="role2">Name</label>
+                <input type="text" name="role_name" id="role_name" required onkeyup="updateText(this, 'full_rid')"/>
+                <label for="role_name">Role Name</label>
 </p>        </div>
 
   </div>
   <div class="row">
-    <textarea name="fancy-textarea" id="fancy-textarea" required></textarea>
-    <label for="fancy-textarea">Description</label>
+    <textarea name="role_description" id="role_description" style="height: 150px;overflow: auto"></textarea>
+    <label for="role_description">Role Description</label>
   </div>
 <div class="row col-2 pad-20">
-     <div style="flex-direction: column; display: flex; margin-left: 50px;">
-<div    class="cell" style="max-height: 300px; display: flex; flex-direction: row; vertical-align: center" >
+     <div class="flex-col" style="margin-left: 50px;">
+         <h3>Choose Scope</h3>
+
+<div class="cell flex-row" style="max-height: 300px;" >
     <p>
-    <input type="radio" name="fancy-radio4" id="fancy-radio-3"/>
-    <label for="fancy-radio-3">Room</label>
+    <input type="radio" required name="role_scope" id="scope_room" value="room" />
+    <label for="scope_room">Room</label>
         </p>
 
     <p class="badge font-small" style="" >Room</p>
 </div>
-    <div class="cell" style="max-height: 300px; display: flex; flex-direction: row; ">
+    <div class="cell flex-row" style="max-height: 300px; ">
         <p>
-    <input type="radio" name="fancy-radio4" id="fancy-radio-4"/>
-    <label for="fancy-radio-4">Global</label>
+    <input type="radio" name="role_scope" id="scope_global" value="global" />
+    <label for="scope_global">Global</label>
         </p>
         <span class="badge font-small">Global</span>
 </div>
@@ -53,11 +51,12 @@
     <div class="cell">
           <h3>  <label for="role_type">Choose Role Type:</label> </h3>
         <p class="badge ">
-        <input id="lista" list="role_type" name="role_type">
+        <input id="lista" list="role_type" name="role_type" required 
+               onchange="updateRoleTypeRequireds(this, 'permissions-input-div','role_label-div' )">
                 <datalist id="role_type">
-                  <option value="Internet Explorer">
-                  <option value="Firefox">
-                  <option value="Chrome">
+                  <option value="Owner">
+                  <option value="Admin">
+                  <option value="LE">
                 </datalist>
         </p>
 
@@ -65,64 +64,41 @@
 </div>
 
 <div class="row col-2">
+    <div id="permissions-input-div" class="flex-col" style="display: none;">
+    <h3>Select Role Permissions: </h3>
+    <input type="hidden" id="permissions-input" name="permissions" value="">
+    <select id="select-permissions" style="width: 100%; height: 100px; overflow: auto;" multiple >
+    </select>
     <div id="permissions-row" class="row pad-20"
-         style="max-height: 300px; overflow:scroll;">
-    <select id="error-type" multiple>
+         style="max-height: 500px; overflow:auto;">
     <input type="text" id="myInput"
-           onkeyup="searchList('permissions-row')" placeholder="Search Permissions">
-
+           onkeyup="searchList('permissions-ul')" placeholder="Search Permissions"
+        style="margin-top: 20px;">
+    <ul id="permissions-ul" style="max-height: 400px; overflow: auto;">
       {%  for permission in permissions %}
-      <li>
+      <li id="{{  permission['PID'] }}">
           <i class="bi-x-circle"
              onmouseenter="  this.classList.replace('bi-x-circle','bi-x-circle-fill'); this.classList.toggle('red')"
              onmouseleave="this.classList.toggle('red');  this.classList.replace('bi-x-circle-fill','bi-x-circle');"
           onclick="deleteParent(this)"></i>
           <i class="bi-circle" onmouseenter="this.classList.replace('bi-circle','bi-circle-fill')"
-             onmouseleave=" if (!this.classList.contains('blue')) this.classList.replace('bi-circle-fill', 'bi-circle')"
-            onclick="this.classList.add('bi-circle-fill'); this.classList.toggle('blue'); this.classList.remove('bi-circle'); "></i>
-          {{ permission['PID'] +" "+permission['name'] }}</li>
+             onmouseleave="this.classList.replace('bi-circle-fill', 'bi-circle')"
+            onclick="selectItem(this, 'select-permissions', 'permissions-input'); "></i>
+          {{ permission['PID'] +": "+permission['name'] }}</li>
       {% endfor %}
-
+    </ul>
   </div>
-  <div class="input-text-section">
-    <textarea name="role_label" id="role_label" ></textarea>
-    <label for="role_label">Role label</label>
+    </div>
+  <div id="role_label-div" class="input-text-section" style="margin-left: 10px; width: 80%; display: none;">
+      <h3>Write Role Label:</h3>
+ <input type="text" name="role_label" id="role_label" />
+ <label for="role_label">Role Label</label>
   </div>
 </div>
-  <div class="row pad-20">
-    <input type="radio" name="fancy-radio" id="fancy-radio-3"/>
-    <label for="fancy-radio-3">Radio</label>
-    <br />
-    <input type="radio" name="fancy-radio" id="fancy-radio-4"/>
-    <label for="fancy-radio-4">Radio</label>
-        <label for="cars">Choose a car:</label>
-          <select name="cars" id="cars" multiple>
-            <option value="volvo">Volvo</option>
-            <option value="saab">Saab</option>
-            <option value="opel">Opel</option>
-            <option value="audi">Audi</option>
-          </select>
-  </div>
 
-  <div class="row">
-    <input type="radio" name="fancy-radio" id="fancy-radio-1"/>
-    <label for="fancy-radio-1">Radio</label>
-
-    <input type="radio" name="fancy-radio" id="fancy-radio-2"/>
-    <label for="fancy-radio-2">Radio</label>
-  </div>
-
-  <div class="row">
-    <input type="text" name="fancy-text" id="fancy-text"/>
-    <label for="fancy-text">Name</label>
-  </div>
-
-
-
+<div class="flex-row" style="justify-content: center;">
   <button type="submit" tabindex="0">Submit</button>
+    </div>
 </form>
 
-{%- endmacro %}
 
-</body>
-</html>

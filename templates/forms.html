@@ -6,3 +6,36 @@
     <textarea name="{{ name }}" rows="{{ rows }}" cols="{{ cols
         }}" id="{{ name }}">{{ value|e }}</textarea>
 {%- endmacro %}
+
+  <div class="row pad-20">
+    <input type="radio" name="fancy-radio" id="fancy-radio-3"/>
+    <label for="fancy-radio-3">Radio</label>
+    <br />
+    <input type="radio" name="fancy-radio" id="fancy-radio-4"/>
+    <label for="fancy-radio-4">Radio</label>
+        <label for="cars">Choose a car:</label>
+          <select name="cars" id="cars" multiple>
+            <option value="volvo">Volvo</option>
+            <option value="saab">Saab</option>
+            <option value="opel">Opel</option>
+            <option value="audi">Audi</option>
+          </select>
+  </div>
+
+  <div class="row">
+    <input type="radio" name="fancy-radio" id="fancy-radio-1"/>
+    <label for="fancy-radio-1">Radio</label>
+
+    <input type="radio" name="fancy-radio" id="fancy-radio-2"/>
+    <label for="fancy-radio-2">Radio</label>
+  </div>
+
+  <div class="row">
+    <input type="text" name="fancy-text" id="fancy-text"/>
+    <label for="fancy-text">Name</label>
+  </div>
+
+  <div class="row">
+    <input type="checkbox" name="fancy-checkbox" id="fancy-checkbox"/>
+    <label for="fancy-checkbox">Checkbox</label>
+  </div>
