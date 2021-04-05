@@ -27,7 +27,7 @@ def make_new_role(a, role_id):
         b['description'] = None
 
     b['role_id'] = role_id
-    b['full_roleId'] = role_id+":"+b.get('name', 'Role Name Not Available')
+    b['full_roleId'] = role_id+":"+b.get('name', 'Role Name Not Specified')
     b['permissions'] = b['permissions'].split('|||')
 
     if b['permissions']:
