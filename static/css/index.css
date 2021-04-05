@@ -1,3 +1,13 @@
+.flex-col{
+	flex-direction: column;
+	display: flex;
+}
+.flex-row{
+	flex-direction: row;
+	display: flex;
+	vertical-align: center;
+}
+
 #lista:focus{
 	border: 2px solid #0288d1;
 }
@@ -119,6 +129,7 @@ form {
 	 padding-right: 10px;
  }
  form li {
+     list-style-type: none;
 	 border: 2px solid #0288d1;
 	 color: #0288d1;
 	 padding: 12px;
@@ -143,7 +154,7 @@ form {
 }
  form textarea {
 	 height: auto;
-	 min-height: 200px;
+	 /*min-height: 200px;*/
 	 padding: 50px 10px 10px 10px;
 }
  form input[type="text"] + label, form input[type="password"] + label, form textarea + label {
