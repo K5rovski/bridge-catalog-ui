@@ -4,10 +4,13 @@
     <title> {{ title }}</title>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
 	<link href="{{ url_for('static', filename="css/index.css") }}" rel="stylesheet">
-	<link href="{{ url_for('static', filename="css/bootstrap-icons.css") }}" rel="stylesheet">
-        <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+	<link href="{{ url_for('static', filename="css/awesomplete.css") }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename="css/bootstrap-icons.css") }}" rel="stylesheet">
 
-    <script type="text/javascript" src="{{ url_for('static', filename="js/index.js") }}"></script>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <script type="text/javascript" src="{{ url_for('static', filename="js/awesomplete.min.js") }}"></script>
+
+    <script type="text/javascript"  type="module" src="{{ url_for('static', filename="js/index.js") }}"></script>
 
 </head>
 

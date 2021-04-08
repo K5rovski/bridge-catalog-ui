@@ -51,13 +51,18 @@
     <div class="cell">
           <h3>  <label for="role_type">Choose Role Type:</label> </h3>
         <p class="badge ">
-        <input id="lista" list="role_type" name="role_type" required 
-               onchange="updateRoleTypeRequireds(this, 'permissions-input-div','role_label-div' )">
-                <datalist id="role_type">
-                  <option value="Owner">
-                  <option value="Admin">
-                  <option value="LE">
-                </datalist>
+            <input data-list="CSS, JavaScript, HTML, SVG, ARIA, MathML"
+                   id="lista" list="role_type" name="role_type"  required data-multiple
+                   onchange="updateRoleTypeRequireds(this, 'permissions-input-div','role_label-div' )" />
+
+
+{#        <input id="lista" list="role_type" name="role_type" required #}
+{#               onchange="updateRoleTypeRequireds(this, 'permissions-input-div','role_label-div' )">#}
+{#                <datalist id="role_type">#}
+{#                  <option value="Owner">#}
+{#                  <option value="Admin">#}
+{#                  <option value="LE">#}
+{#                </datalist>#}
         </p>
 
 </div>
