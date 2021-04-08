@@ -2,13 +2,17 @@ import flask
 import os
 
 import pymongo
+import traceback
 from flask_pymongo import PyMongo
-from flask import request, redirect, url_for, render_template
+from flask_cors import CORS
+from flask import request, redirect, url_for, render_template, jsonify
 
 application = flask.Flask(__name__)
 application.config[
     "MONGO_URI"] = "mongodb+srv://kristijan:pgW5DTNsjjpKx7I4@feature-testing0.ws7l0.mongodb.net/FeatureCatalog"
 mongo = PyMongo(application)
+CORS(application)
+
 # Only enable Flask debugging if an env var is set to true
 application.debug = os.environ.get('FLASK_DEBUG') in ['true', 'True']
 
@@ -55,6 +59,21 @@ def index():
 def error():
     return flask.render_template('error.html',
                                  title='Error Page!')
+
+@application.route('/create-role')
+def populate_role_form():
+    pass
+    try:
+        last_role = mongo.db.test_roles.find().sort('_id', pymongo.DESCENDING).limit(1)[0]
+        rid_latest_index = 'R-{:02d}'.format(int(last_role['role_id'].replace('R-', '')) + 1)
+        permissions_db = mongo.db.permissions
+    except:
+        traceback.print_exc()
+        return 'db error!', 500
+
+    data = dict(permissions=get_coll_items(permissions_db),
+        rid_latest_index=rid_latest_index,status=True)
+    return jsonify(data)
 
 @application.route('/role', methods=['GET', 'POST'])
 def create_role():

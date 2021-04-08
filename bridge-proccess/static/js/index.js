@@ -22,11 +22,10 @@ new Awesomplete('input[data-multiple]', {
 function deleteParent(element){
 // Loop through all list items, and hide those who don't match the search query
 	let parent = element.parentElement;
-
 	parent.parentElement.removeChild(parent);
-
-
 }
+
+
 function searchList(listElement) {
 	// Declare variables
   var input, filter, ul, li, a, i, txtValue;
