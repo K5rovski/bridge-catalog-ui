@@ -136,6 +136,7 @@ form {
 	 margin-bottom: 12px;
 	 font-size: large;
 	 border-radius: 30px;
+	 text-align: start;
 }
  form .row {
 	 margin-bottom: 25px;
