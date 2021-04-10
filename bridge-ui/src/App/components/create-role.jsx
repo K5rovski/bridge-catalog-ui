@@ -12,6 +12,9 @@ class CreateRole extends React.Component {
 			rid_latest_index: -1,
 			permissions: [],
 			role_name: '',
+			role_type: '',
+			role_label: '',
+			role_scope: null,
 		};
 		this.roleName = React.createRef();
 		this.fullRid = React.createRef();
