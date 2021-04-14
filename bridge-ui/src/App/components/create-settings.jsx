@@ -136,7 +136,7 @@ class CreateSetting extends React.Component{
 
     {this.state.features.map(feature => (
 
-      <li id={role.role_id} key={role.role_id}>
+      <li id={feature.fid} key={feature.fid}>
           <i className="bi-x-circle"
              onMouseEnter={ e => {
              {/*e.target.classList.replace('bi-x-circle','bi-x-circle-fill'); */}
@@ -151,8 +151,9 @@ class CreateSetting extends React.Component{
           	e.target.classList.replace('bi-circle','bi-circle-fill')}
              onMouseLeave={e =>
              	e.target.classList.replace('bi-circle-fill', 'bi-circle')}
-            onClick={e => this.selectRole(e.target, 'select-roles', 'roles-input', 'perm_roles') } ></i>
-          { role.full_roleId }</li>
+            onClick={e => this.selectFeature(e.target, 'select-features',
+                'features-input', 'setting_features') } ></i>
+          { feature.fullFid }</li>
 
           ))}
     </ul>

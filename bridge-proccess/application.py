@@ -29,6 +29,12 @@ def make_new_doc(a, doc_id):
     b = {k[k.index('_')+1:]: v for k, v in a.items()}
     return b
 
+
+def get_sorted_document_list(document_collection_db, id_col_name):
+    document_list = get_coll_items(document_collection_db)
+    document_list.sort(key=lambda p: int(p[id_col_name][2:]))
+    return document_list
+
 def make_new_role(a, role_id):
     b = {k.replace('role_', ''): v for k, v in a.items()}
     if not 'permissions' in b:
@@ -103,15 +109,13 @@ def make_setting():
         try:
             last_setting = mongo.db.settings.find().sort('_id', pymongo.DESCENDING).limit(1)[0]
             sid_latest_index = 'S-{:02d}'.format(int(last_setting['sid'].replace('S-', '')) + 1)
-            settings_db = mongo.db.settings
-            settings_list = get_coll_items(settings_db)
-            settings_list.sort(key=lambda p: int(p['sid'][2:]))
+            features_list = get_sorted_document_list(mongo.db.features, 'fid')
         except:
             traceback.print_exc()
             return 'db error!', 500
 
-        data = dict(permissions=settings_list,
-            rid_latest_index=sid_latest_index, status=True)
+        data = dict(features=features_list,
+            sid_latest_index=sid_latest_index, status=True)
         return jsonify(data)
     elif request.method == 'POST':
         last_setting = mongo.db.settings.find().sort('_id', pymongo.DESCENDING).limit(1)[0]
@@ -134,15 +138,15 @@ def make_permission():
         try:
             last_permission = mongo.db.permissions.find().sort('_id', pymongo.DESCENDING).limit(1)[0]
             pid_latest_index = 'P-{:02d}'.format(int(last_permission['PID'].replace('P-', '')) + 1)
-            permissions_db = mongo.db.permissions
-            permissions_list = get_coll_items(permissions_db)
-            permissions_list.sort(key=lambda p: int(p['PID'][2:]))
+            features_list = get_sorted_document_list(mongo.db.features, 'fid')
+            roles_list = get_sorted_document_list(mongo.db.test_roles, 'role_id')
         except:
             traceback.print_exc()
             return 'db error!', 500
 
-        data = dict(permissions=permissions_list,
-            rid_latest_index=pid_latest_index, status=True)
+        data = dict(roles=roles_list,
+                    features=features_list,
+            pid_latest_index=pid_latest_index, status=True)
         return jsonify(data)
     elif request.method == 'POST':
         last_permission = mongo.db.test_roles.find().sort('_id', pymongo.DESCENDING).limit(1)[0]
