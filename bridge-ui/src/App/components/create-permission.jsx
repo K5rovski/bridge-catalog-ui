@@ -22,23 +22,27 @@ class CreatePermission extends React.Component {
             perm_features: null,
         };
         this.permName = React.createRef();
+        this.permDescription = React.createRef();
         this.fullPid = React.createRef();
+
+        this.role_list = React.createRef();
+        this.feature_list = React.createRef();
+
         const funcsContainer = (new Funcs());
 
         // 'permissions-input-div','role_label-div'
         this.updateText = funcsContainer.updateText.bind(this);
         this.selectFeature = funcsContainer.selectItem.bind(this);
         this.selectRole = funcsContainer.selectItem.bind(this);
+        this.deselectItem = funcsContainer.deselectItem.bind(this);
         this.searchRoles = (new Funcs({searchInput: "search-roles-input",
             listElementId: 'roles-ul'})).searchList.bind(this);
         this.searchFeatures = (new Funcs({searchInput: "search-features-input",
             listElementId: 'features-ul'})).searchList.bind(this);
-        // this.handleInputChange(event_data);
         // after select deselect call manually
 
+        this.deleteParent = funcsContainer.deleteParent.bind(this);
 
-
-        this.handleInputChange = funcsContainer.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
 
     }
@@ -62,12 +66,14 @@ class CreatePermission extends React.Component {
 	handleSubmit(event) {
 		event.preventDefault();
 
-		const perm_data = {	perm_name: this.state.perm_name,
-			perm_roles: this.state.perm_roles,
-			perm_description: this.state.perm_description
+		const perm_data = {	perm_name: this.permName.current.value,
+			perm_roles: this.role_list.current.value,
+            perm_features: this.feature_list.current.value,
+			perm_description: this.permDescription.current.value,
 		};
 
-		console.log('in submit')
+		console.log('in submit', perm_data)
+		console.log('in submit', this.role_list)
 		axios.post(connString.backendEndpoint+"/permission", perm_data)
 	.then(res => {
 			toast.info('Written permission in DB :(', {
@@ -106,7 +112,7 @@ class CreatePermission extends React.Component {
                     <div className="input-text-section cell" id="in_full_pid">
                         <p className="line-item">
                             <input type="text" name="perm_name"
-                                   id="perm_name" required onChange={this.handleInputChange}
+                                   id="perm_name" required
                                    onKeyUp={e => {this.updateText(e, "full_pid") }} ref={this.permName}/>
                             <label htmlFor="perm_name">Permission Name</label>
                         </p></div>
@@ -114,7 +120,7 @@ class CreatePermission extends React.Component {
                 </div>
                 <div className="row">
     <textarea name="perm_description" id="perm_description"
-              style={{height: "150px", overflow: "auto"}}></textarea>
+              style={{height: "150px", overflow: "auto"}} ref={this.permDescription}></textarea>
                     <label htmlFor="perm_description">Permission Description</label>
                 </div>
 
@@ -122,7 +128,7 @@ class CreatePermission extends React.Component {
                 <div className="row col-2">
     <div id="roles-input-div" className="flex-col" >
     <h3>Select Permission Roles: </h3>
-    <input type="hidden" id="roles-input" name="perm_roles" value=""  />
+    <input type="hidden" id="roles-input" name="perm_roles" value="" ref={this.role_list} />
     <select id="select-roles" style={{width: "100%", height: "100px", overflow: "auto"}} multiple >
     </select>
 		<button tabIndex="0" type="button" className={`${this.state.isSelectedAll ? "active" : ""} `}
@@ -133,13 +139,14 @@ class CreatePermission extends React.Component {
     <div id="roles-row" className="row pad-20"
          style={{"maxHeight": "500px", overflow:"auto"}}>
     <input type="text" id="search-roles-input"
-           onKeyUp={this.searchRoles} placeholder="Search Roles"
+           onKeyUp={(e) => {this.searchRoles('search-roles-input',
+               'roles-ul')}} placeholder="Search Roles"
         style={{"marginTop": "20px"}} />
     <ul id="roles-ul"  style={{"maxHeight": "400px", overflow:"auto"}}>
 
     {this.state.roles.map(role => (
 
-      <li id={role.role_id} key={role.role_id}>
+      <li id={role.roleId} key={role.roleId}>
           <i className="bi-x-circle"
              onMouseEnter={ e => {
              {/*e.target.classList.replace('bi-x-circle','bi-x-circle-fill'); */}
@@ -155,7 +162,7 @@ class CreatePermission extends React.Component {
              onMouseLeave={e =>
              	e.target.classList.replace('bi-circle-fill', 'bi-circle')}
             onClick={e => this.selectRole(e.target, 'select-roles', 'roles-input', 'perm_roles') } ></i>
-          { role.full_roleId }</li>
+          { role.fullRoleId }</li>
 
           ))}
     </ul>
@@ -164,7 +171,7 @@ class CreatePermission extends React.Component {
 
        <div id="features-input-div" className="flex-col" >
     <h3>Select Permission Features: </h3>
-    <input type="hidden" id="features-input" name="perm_features" value=""  />
+    <input type="hidden" id="features-input" name="perm_features" value=""  ref={this.feature_list} />
     <select id="select-features" style={{width: "100%", height: "100px", overflow: "auto"}} multiple >
     </select>
 		<button tabIndex="0" type="button" className={`${this.state.isSelectedAll ? "active" : ""} `}
@@ -174,8 +181,9 @@ class CreatePermission extends React.Component {
 
     <div id="features-row" className="row pad-20"
          style={{"maxHeight": "500px", overflow:"auto"}}>
-    <input type="text" id="search-roles-input"
-           onKeyUp={this.searchFeatures} placeholder="Search Features"
+    <input type="text" id="search-features-input"
+           onKeyUp={(e) =>
+               this.searchFeatures('search-features-input', 'features-ul')} placeholder="Search Features"
         style={{"marginTop": "20px"}} />
     <ul id="features-ul"  style={{"maxHeight": "400px", overflow:"auto"}}>
 
@@ -196,8 +204,11 @@ class CreatePermission extends React.Component {
           	e.target.classList.replace('bi-circle','bi-circle-fill')}
              onMouseLeave={e =>
              	e.target.classList.replace('bi-circle-fill', 'bi-circle')}
-            onClick={e => this.selectFeature(e.target, 'select-features', 'features-input', 'perm_features') } ></i>
-          { feature.full_id }</li>
+            onClick={e => {
+               const event = this.selectFeature(e.target, 'select-features', 'features-input', 'perm_features');
+               // this.handleInputChange(event);
+            } } ></i>
+          { feature.fullFid }</li>
 
           ))}
     </ul>

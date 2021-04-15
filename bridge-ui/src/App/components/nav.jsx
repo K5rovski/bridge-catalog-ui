@@ -13,6 +13,7 @@ function Navbar(){
 		            <li><NavLink to = '/feature-request'>Feature Request</NavLink></li>
 		            <li><NavLink to = '/create-role'>Create Role</NavLink></li>
 		            <li><NavLink to = '/create-permission'>Create Permission</NavLink></li>
+		            <li><NavLink to = '/create-setting'>Create Setting</NavLink></li>
 
 		         </ul>
 		    </div>

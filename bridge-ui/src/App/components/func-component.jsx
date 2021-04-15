@@ -12,15 +12,7 @@ class FuncComponent{
     selectAllItems(elm, select_elm_id, hidden_elm_id){
 
     }
-    handleInputChange(event) {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-        console.log(name, value)
-        this.setState({
-            [name]: value
-        });
-    }
+
     updateText(e, fullIdHTMLId){
         const fullId = document.getElementById(fullIdHTMLId)
 	fullId.innerText = e.target.value;
@@ -61,21 +53,24 @@ class FuncComponent{
 	select_elm.append(option);
 	const hidden_select = document.getElementById(hidden_elm_id);
 	const select_value = hidden_select.getAttribute('value');
+	console.log('pre concat: ',hidden_elm_id)
 	hidden_select.setAttribute('value', select_value+ SEPARATOR+start_text);
 
 	item.style.display = 'none';
 	const event_data = {target: {value: hidden_select.getAttribute('value'),
 			type: 'hidden', name: input_name}}
+	// this.handleInputChange(event_data);
+	//  console.log(event_data)
     return event_data;
 	// console.log(small_text);
 }
 
-searchList() {
+searchList(search_input_id, list_element_id) {
 	// Declare variables
   var input, filter, ul, li, a, i, txtValue;
-	input = document.getElementById(this.searchInput);
+	input = document.getElementById(search_input_id);
 	filter = input.value.toUpperCase();
-	ul = document.getElementById(this.listElementId);
+	ul = document.getElementById(list_element_id);
 	li = ul.getElementsByTagName('li');
 	// console.log(filter==="");
 	if (filter===""){

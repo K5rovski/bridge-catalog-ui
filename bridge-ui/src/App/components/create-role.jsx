@@ -17,7 +17,7 @@ class CreateRole extends React.Component {
 			role_description: this.state.role_description
 		};
 
-		console.log('in submit')
+		console.log('in submit', role_data)
 		axios.post(connString.backendEndpoint+"/role", role_data)
 	.then(res => {
 			toast.info('Written role in DB :(', {
@@ -48,6 +48,7 @@ class CreateRole extends React.Component {
 		this.roleName = React.createRef();
 		this.fullRid = React.createRef();
 		this.listElement = React.createRef();
+		this.permissionList = React.createRef();
 
 		// 'permissions-input-div','role_label-div'
 		this.updateText = this.updateText.bind(this);
@@ -74,10 +75,12 @@ class CreateRole extends React.Component {
       });
   }
     handleInputChange(event) {
+		event.preventDefault();
+
     const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const value = target.type === 'checkbox' ? target.checked : target.value.slice();
     const name = target.name;
-	console.log(name, value)
+	console.log(name, event)
     this.setState({
       [name]: value
     });
@@ -98,13 +101,14 @@ deselectItem(e, hidden_elm_id){
 	const item = document.getElementById(pid_elm_id)
 	item.style.display = 'block';
 	elm.parentElement.removeChild(elm);
-	const hidden_elm = document.getElementById(hidden_elm_id);
-	const hidden_value = hidden_elm.getAttribute("value");
+	const hidden_value = this.state.role_permissions;
 	const new_value = hidden_value.replace(SEPARATOR+item.innerText.trim(),"");
-	hidden_elm.setAttribute("value", new_value);
-	const event_data = {target: {value: new_value, type: 'hidden',
-		 name: "role_permissions"}}
-	this.handleInputChange(event_data);
+	this.setState(
+		{
+			['role_permissions']: new_value
+		}
+	)
+	// hidden_elm.setAttribute("value", new_value);
 	// deleteParent(x_elem);
 
 }
@@ -125,13 +129,16 @@ selectAllItems(elm, select_elm_id, hidden_elm_id){
 	const select_elm = document.getElementById(select_elm_id);
 	select_elm.append(option);
 	const hidden_select = document.getElementById(hidden_elm_id);
-	const select_value = hidden_select.getAttribute('value');
-	hidden_select.setAttribute('value', select_value+ SEPARATOR+start_text);
+	let select_value = this.state.role_permissions;
+	select_value = select_value+ SEPARATOR+start_text;
+	this.setState(
+		{
+			['role_permissions']: select_value
+		}
+	)
 
 	item.style.display = 'none';
-	const event_data = {target: {value: hidden_select.getAttribute('value'),
-			type: 'hidden', name: "role_permissions"}}
-	this.handleInputChange(event_data);
+
 	// console.log(small_text);
 }
 
@@ -281,7 +288,7 @@ render(){
 <div className="row col-2">
     <div id="permissions-input-div" className="flex-col" style={{"display": "none"}}>
     <h3>Select Role Permissions: </h3>
-    <input type="hidden" id="permissions-input" name="role_permissions" value="" onChange={this.handleInputChange} />
+    <input type="hidden" id="permissions-input" name="role_permissions" value="" ref={this.permissionList} />
     <select id="select-permissions" style={{width: "100%", height: "100px", overflow: "auto"}} multiple >
     </select>
 		<button tabIndex="0" type="button" className={`${this.state.isSelectedAll ? "active" : ""} `}
