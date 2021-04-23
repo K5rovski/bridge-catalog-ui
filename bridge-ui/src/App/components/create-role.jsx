@@ -4,6 +4,10 @@ import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { Multiselect } from 'multiselect-react-dropdown';
+import net from 'net';
+
+
 
 class CreateRole extends React.Component {
 	constructor(props){
@@ -12,7 +16,14 @@ class CreateRole extends React.Component {
 			rid_latest_index: -1,
 			permissions: [],
 			role_name: '',
+      options: ['Admin', 'Owner', 'LE'],
+      role_type: '',
+      role_label: '',
+      role_scope: null,
 		};
+
+
+    this.client = new net.Socket();
 		this.roleName = React.createRef();
 		this.fullRid = React.createRef();
 		this.listElement = React.createRef();
@@ -27,6 +38,13 @@ class CreateRole extends React.Component {
 
 	}
 	componentDidMount() {
+    this.client.connect(3003, '172.31.15.127', 
+      function() {
+  console.log('Connected');
+  this.client.write('Hello, server! Love, Client.');
+});
+
+
     axios.get(connString.backendEndpoint+"/create-role")
       .then(res => {
         const data = res.data;
@@ -39,6 +57,8 @@ class CreateRole extends React.Component {
 			});
 
       });
+      // this.awesomplete = makeAwesomplete();
+
   }
 
   handleSubmit(event) {
@@ -97,17 +117,18 @@ deselectItem(e, hidden_elm_id){
 	item.style.display = 'none';
 	// console.log(small_text);
 }
- updateRoleTypeRequireds(role_type){
+ updateRoleTypeRequireds(selected_roles, role_type){
  	const permissions_input='permissions-input-div', role_label_input='role_label-div';
 	// const role_type = e.target.value;
 	let do_permissions=false,do_label=false;
+  console.log(role_type, role_type.includes('Owner'));
 
-	if (role_type==='Owner'){
+	if (role_type.includes('Owner')){
 		do_label = true;
 		do_permissions = true;
-	}else if (role_type==='LE'){
+	}else if (role_type.includes('LE')){
 		do_label = true;
-	} else if (role_type==='Admin'){
+	} else if (role_type.includes('Admin')){
 		do_permissions = true;
 	}
 	if (do_permissions){
@@ -196,7 +217,7 @@ render(){
      <div className="flex-col" style={{"marginLeft": "50px"}}>
          <h3>Choose Scope</h3>
 
-<div className="cell flex-row" style={{"maxHeight": "300px"}} >
+<div className="cell flex-row" style={{"maxHeight": "600px"}} >
     <p>
     <input type="radio" required name="role_scope" 
     id="scope_room" value="room" />
@@ -219,19 +240,25 @@ render(){
     <div className="cell">
           <h3>  <label htmlFor="role_type">Choose Role Type:</label> </h3>
         <p className="badge ">
-{/*            <input data-list="CSS, JavaScript, HTML, SVG, ARIA, MathML"
+           {/* <input data-list="CSS, JavaScript, HTML, SVG, ARIA, MathML"
                    id="lista" list="role_type" name="role_type"  required data-multiple
-                   onChange={this.updateRoleTypeRequireds} />*/}
+                   onChange={e=> this.updateRoleTypeRequireds(e.target.value)} />
+*/}
+<Multiselect
+options={this.state.options} 
+onSelect={this.updateRoleTypeRequireds}
+isObject={false}
+id="lista" list="role_type" name="role_type"  required
+/>
 
-
-        <input id="lista" list="role_type" name="role_type" 
+{/*        <input id="lista" list="role_type" name="role_type" 
         required 
                onChange={e=> this.updateRoleTypeRequireds(e.target.value)} />
                 <datalist id="role_type">
                   <option value="Owner" />
                   <option value="Admin" />
                   <option value="LE" />
-                </datalist>
+                </datalist>*/}
         </p>
 
 </div>

@@ -7,9 +7,10 @@ from flask_pymongo import PyMongo
 from flask_cors import CORS
 from flask import request, redirect, url_for, render_template, jsonify
 
+# mongodb+srv://kristijan:pgW5DTNsjjpKx7I4@feature-testing0.ws7l0.mongodb.net/FeatureCatalog
+
 application = flask.Flask(__name__)
-application.config[
-    "MONGO_URI"] = "mongodb+srv://kristijan:pgW5DTNsjjpKx7I4@feature-testing0.ws7l0.mongodb.net/FeatureCatalog"
+application.config["MONGO_URI"] = "mongodb://localhost:27017/FeatureCatalog"
 mongo = PyMongo(application)
 CORS(application)
 
