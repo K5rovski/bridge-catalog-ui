@@ -5,28 +5,56 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { Multiselect } from 'multiselect-react-dropdown';
-import net from 'net';
 
 
 
 class CreateRole extends React.Component {
+	handleSubmit(event) {
+		event.preventDefault();
+
+		const role_data = {	role_name: this.state.role_name,
+			role_type: this.state.role_type,
+			role_label: this.state.role_label,
+			role_scope: this.state.role_scope,
+			role_permissions: this.state.role_permissions,
+			role_description: this.state.role_description
+		};
+
+		console.log('in submit', role_data)
+		axios.post(connString.backendEndpoint+"/role", role_data)
+	.then(res => {
+			toast.info('Written role in DB :(', {
+				position: "top-right",
+				autoClose: 3000,
+			});
+		}).catch(err=> {
+
+			toast.error('Db error! :(', {
+				position: "top-right",
+				autoClose: 3000,
+			});
+
+		});
+	}
 	constructor(props){
 		super();
 		this.state = {
 			rid_latest_index: -1,
 			permissions: [],
+			isSelectedAll: false,
 			role_name: '',
       options: ['Admin', 'Owner', 'LE'],
-      role_type: '',
-      role_label: '',
-      role_scope: null,
+			role_type: '',
+			role_label: '',
+			role_scope: null,
+			role_permissions: ''
 		};
 
 
-    this.client = new net.Socket();
 		this.roleName = React.createRef();
 		this.fullRid = React.createRef();
 		this.listElement = React.createRef();
+		this.permissionList = React.createRef();
 
 		// 'permissions-input-div','role_label-div'
 		this.updateText = this.updateText.bind(this);
@@ -37,15 +65,12 @@ class CreateRole extends React.Component {
 		this.handleInputChange = this.handleInputChange.bind(this);
 
 	}
+
 	componentDidMount() {
-    this.client.connect(3003, '172.31.15.127', 
-      function() {
-  console.log('Connected');
-  this.client.write('Hello, server! Love, Client.');
-});
 
 
-    axios.get(connString.backendEndpoint+"/create-role")
+
+    axios.get(connString.backendEndpoint+"/role")
       .then(res => {
         const data = res.data;
         this.setState({ rid_latest_index:data.rid_latest_index,
@@ -60,16 +85,15 @@ class CreateRole extends React.Component {
       // this.awesomplete = makeAwesomplete();
 
   }
-
-  handleSubmit(event) {
-    alert('Your favorite flavor is: ' + this.state.role_name);
+    handleInputChange(event) {
+		if (typeof event.preventDefault !== "undefined"){
     event.preventDefault();
   }
-    handleInputChange(event) {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
 
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value.slice();
+    const name = target.name;
+	console.log(name+"  handle input", event)
     this.setState({
       [name]: value
     });
@@ -90,11 +114,18 @@ deselectItem(e, hidden_elm_id){
 	const item = document.getElementById(pid_elm_id)
 	item.style.display = 'block';
 	elm.parentElement.removeChild(elm);
-	const hidden_elm = document.getElementById(hidden_elm_id);
-	const hidden_value = hidden_elm.getAttribute("value");
+	const hidden_value = this.state.role_permissions;
 	const new_value = hidden_value.replace(SEPARATOR+item.innerText.trim(),"");
-	hidden_elm.setAttribute("value", new_value);
+	this.setState(
+		{
+			['role_permissions']: new_value
+		}
+	)
+	// hidden_elm.setAttribute("value", new_value);
 	// deleteParent(x_elem);
+
+}
+selectAllItems(elm, select_elm_id, hidden_elm_id){
 
 }
  selectItem(elm, select_elm_id, hidden_elm_id){
@@ -111,17 +142,54 @@ deselectItem(e, hidden_elm_id){
 	const select_elm = document.getElementById(select_elm_id);
 	select_elm.append(option);
 	const hidden_select = document.getElementById(hidden_elm_id);
-	const select_value = hidden_select.getAttribute('value');
-	hidden_select.setAttribute('value', select_value+ SEPARATOR+start_text);
+	let select_value = this.state.role_permissions;
+	select_value = select_value+ SEPARATOR+start_text;
+	this.setState(
+		{
+			['role_permissions']: select_value
+		}
+	)
 
 	item.style.display = 'none';
+
 	// console.log(small_text);
 }
- updateRoleTypeRequireds(selected_roles, role_type){
+
+searchList() {
+	// Declare variables
+  var input, filter, ul, li, a, i, txtValue;
+	input = document.getElementById('myInput');
+	filter = input.value.toUpperCase();
+	ul = this.listElement.current // document.getElementById(this.listElement);
+	li = ul.getElementsByTagName('li');
+	// console.log(filter==="");
+	if (filter===""){
+	  for (i=0;i<li.length;i++){
+		li[i].style.display = "block";
+	}
+
+
+  } else {
+// console.log(item);
+	  for (i = 0; i < li.length; i++) {
+		  // a = li[i].getElementsByTagName("a")[0];
+		  txtValue = li[i].innerText;
+		  if (txtValue && txtValue.toUpperCase().indexOf(filter) > -1) {
+			  li[i].style.display = "";
+		  } else {
+			  li[i].style.display = "none";
+		  }
+
+	  }
+  }
+
+}
+
+ updateRoleTypeRequireds(role_type){
  	const permissions_input='permissions-input-div', role_label_input='role_label-div';
 	// const role_type = e.target.value;
 	let do_permissions=false,do_label=false;
-  console.log(role_type, role_type.includes('Owner'));
+  console.log(role_type+"type setup!!!!", role_type.includes('Owner'));
 
 	if (role_type.includes('Owner')){
 		do_label = true;
@@ -152,35 +220,7 @@ deselectItem(e, hidden_elm_id){
 
 	// console.log(role_type_elm);
 }
-searchList() {
-	// Declare variables
-  var input, filter, ul, li, a, i, txtValue;
-	input = document.getElementById('myInput');
-	filter = input.value.toUpperCase();
-	ul = this.listElement.current // document.getElementById(this.listElement);
-	li = ul.getElementsByTagName('li');
-	// console.log(filter==="");
-	if (filter===""){
-	  for (i=0;i<li.length;i++){
-		li[i].style.display = "block";
-	}
 
-
-  } else {
-// console.log(item);
-	  for (i = 0; i < li.length; i++) {
-		  // a = li[i].getElementsByTagName("a")[0];
-		  txtValue = li[i].innerText;
-		  if (txtValue && txtValue.toUpperCase().indexOf(filter) > -1) {
-			  li[i].style.display = "";
-		  } else {
-			  li[i].style.display = "none";
-		  }
-
-	  }
-  }
-
-}
 render(){
   return (
   <form onSubmit={this.handleSubmit}>
@@ -210,7 +250,7 @@ render(){
   </div>
   <div className="row">
     <textarea name="role_description" id="role_description" 
-    style={{height: "150px", overflow: "auto"}}></textarea>
+    style={{height: "150px", overflow: "auto"}}  onChange={this.handleInputChange}></textarea>
     <label htmlFor="role_description">Role Description</label>
   </div>
 <div className="row col-2 pad-20">
@@ -220,7 +260,7 @@ render(){
 <div className="cell flex-row" style={{"maxHeight": "600px"}} >
     <p>
     <input type="radio" required name="role_scope" 
-    id="scope_room" value="room" />
+    id="scope_room" value="room" onChange={this.handleInputChange} />
     <label htmlFor="scope_room">Room</label>
         </p>
 
@@ -228,7 +268,8 @@ render(){
 </div>
     <div className="cell flex-row" style={{"maxHeight": "300px"}}>
         <p>
-    <input type="radio" name="role_scope" 
+    <input type="radio" name="role_scope"
+		   onChange={this.handleInputChange}
     id="scope_global" value="global" />
     <label htmlFor="scope_global">Global</label>
         </p>
@@ -237,28 +278,31 @@ render(){
 
    </div>
 
-    <div className="cell">
+    <div className="cell"  style={{height:"500px"}}>
           <h3>  <label htmlFor="role_type">Choose Role Type:</label> </h3>
-        <p className="badge ">
-           {/* <input data-list="CSS, JavaScript, HTML, SVG, ARIA, MathML"
-                   id="lista" list="role_type" name="role_type"  required data-multiple
-                   onChange={e=> this.updateRoleTypeRequireds(e.target.value)} />
-*/}
+        <p className="badge " >
+
 <Multiselect
 options={this.state.options} 
-onSelect={this.updateRoleTypeRequireds}
+onSelect={e=> {this.updateRoleTypeRequireds(e); 
+
+  this.handleInputChange({target:{
+    type:'custom', value:e,name:"role_type"
+  },    })}}
 isObject={false}
 id="lista" list="role_type" name="role_type"  required
 />
 
 {/*        <input id="lista" list="role_type" name="role_type" 
         required 
-               onChange={e=> this.updateRoleTypeRequireds(e.target.value)} />
+               onChange={e=> {this.updateRoleTypeRequireds(e.target.value); this.handleInputChange(e)}} />
                 <datalist id="role_type">
                   <option value="Owner" />
                   <option value="Admin" />
+<<<<<<< HEAD
                   <option value="LE" />
                 </datalist>*/}
+
         </p>
 
 </div>
@@ -267,9 +311,14 @@ id="lista" list="role_type" name="role_type"  required
 <div className="row col-2">
     <div id="permissions-input-div" className="flex-col" style={{"display": "none"}}>
     <h3>Select Role Permissions: </h3>
-    <input type="hidden" id="permissions-input" name="permissions" value="" />
+    <input type="hidden" id="permissions-input" name="role_permissions" value="" ref={this.permissionList} />
     <select id="select-permissions" style={{width: "100%", height: "100px", overflow: "auto"}} multiple >
     </select>
+		<button tabIndex="0" type="button" className={`${this.state.isSelectedAll ? "active" : ""} `}
+				onClick={e => this.selectAllItems(e.target,
+					'select-permissions', 'permissions-input') }>Select all</button>
+
+
     <div id="permissions-row" className="row pad-20"
          style={{"maxHeight": "500px", overflow:"auto"}}>
     <input type="text" id="myInput"
@@ -304,7 +353,7 @@ id="lista" list="role_type" name="role_type"  required
   <div id="role_label-div" className="input-text-section" style={{"marginLeft": "10px", 
   			width: "80%", display: "none" }}>
       <h3>Write Role Label:</h3>
- <input type="text" name="role_label" id="role_label" />
+ <input type="text" name="role_label" id="role_label" onChange={this.handleInputChange} />
  <label htmlFor="role_label">Role Label</label>
   </div>
 </div>
