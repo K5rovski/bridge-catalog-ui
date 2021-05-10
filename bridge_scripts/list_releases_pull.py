@@ -26,6 +26,7 @@ def get_list_tags(base_url, stop_release='3.6.0'):
       releases.append((release,link))
       if release.strip() == stop_release:
         progress = False
+        break
     
     suff='?after={}'.format(releases[-1][0])
 
