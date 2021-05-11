@@ -28,7 +28,9 @@ def save_gspread(worksheet, pull_csv, append=False):
 		'range': 'A1:{}1'.format(string.ascii_uppercase[pull_csv.shape[1]-1]),
 		'values': [list(pull_csv.columns)],
 		}]
-	if append: count = len(worksheet.get_all_values())
+	if append: count = len(worksheet.get_all_values())+1
+	# print(count)
+	#if append: return
 	for letter,(ind,col) in zip(string.ascii_uppercase, pull_csv.iteritems()):
 		sheet_update.append({
 			 'range': '{0}{2}:{0}{1}'.format(letter, pull_csv.shape[0]+1 +
