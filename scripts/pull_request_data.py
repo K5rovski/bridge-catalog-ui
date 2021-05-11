@@ -120,7 +120,7 @@ def get_pull_requests(release_list):
             for indp, pull in enumerate(link_list):
                 k = tuple(pull)[0]
                 v = pull[k]
-                print('{}/{} of pull {}, of release {}-{}    \r'.format(indp,len(link_list) , k,
+                print('{}/{} of pull {}, of release {}-{}    \n'.format(indp,len(link_list) , k,
                                                                        ind_release, len(release_list)), end='')
                 try:
                     files, date = get_files_pull_request(v)
