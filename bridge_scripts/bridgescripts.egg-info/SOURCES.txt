@@ -1,0 +1,6 @@
+setup.cfg
+setup.py
+bridge_scripts/bridgescripts.egg-info/PKG-INFO
+bridge_scripts/bridgescripts.egg-info/SOURCES.txt
+bridge_scripts/bridgescripts.egg-info/dependency_links.txt
+bridge_scripts/bridgescripts.egg-info/top_level.txt

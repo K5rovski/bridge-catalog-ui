@@ -1,0 +1,11 @@
+Metadata-Version: 1.2
+Name: bridge-scripts
+Version: 0.0.1
+Summary: Scripts to ease Bridge RC project
+Home-page: https://github.com/K5rovski/bridge-catalog-ui
+Author: Kristijan Petrovski
+Author-email: K5rovski@gmail.com
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
+Requires-Python: >=3.6
