@@ -18,11 +18,12 @@ def get_latest_saved_versions(sh, sheet_name):
 		key=lambda x: parser.parse(x[1]) if x[0]!=0 and repo_type_column[x[0]]=='Rocket.Chat.ReactNative' else dt_min)
 
 
-	latest_server_version = sh.worksheet(sheet_name).cell(last_server_index, 4).value
-	latest_mobile_version = sh.worksheet(sheet_name).cell(last_mobile_index, 4).value.replace('Version: ', '')
+	latest_server_version = sh.worksheet(sheet_name).cell(last_server_index +1, 4).value
+	latest_mobile_version = sh.worksheet(sheet_name).cell(last_mobile_index +1, 4).value.replace('Version: ', '')
 
 
-	print('latest saved versions\nmobile: {}\nserver: {}'.format(latest_mobile_version,latest_server_version))
+	print('latest saved versions\nmobile: {}\nserver: {}'.format(latest_mobile_version, 
+								latest_server_version))
 
 	return latest_server_version, latest_mobile_version
 
