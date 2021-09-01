@@ -12,7 +12,7 @@ team_cols = [
 '👩\u200d💻👨\u200d💻 Core Team 🤓']
 
 version_cols = ['Node', 'NPM', 'MongoDB', 'Apps-Engine']
-DEFAULT_STATUS_CODE = 78
+DEFAULT_STATUS_CODE = '78'
 
 def clean_string(st):
   pass
