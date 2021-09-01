@@ -18,8 +18,7 @@ Pull Request Description
 Pull Request Type
 Files Changed
 Status
-Feature ID'''.splitlines()
-
+Related FIDs'''.splitlines()
 
 def save_gspread(worksheet, pull_csv, append=False):
 	sheet_update, count = [], 2
