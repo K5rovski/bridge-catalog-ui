@@ -20,14 +20,14 @@ Files Changed
 Status
 Related FIDs'''.splitlines()
 
-def save_gspread(worksheet, pull_csv, append=False):
+def save_gspread(sh, sheet_name, pull_csv, append=False):
 	sheet_update, count = [], 2
 	if not append:
 		sheet_update = [{
 		'range': 'A1:{}1'.format(string.ascii_uppercase[pull_csv.shape[1]-1]),
 		'values': [list(pull_csv.columns)],
 		}]
-	if append: count = len(worksheet.get_all_values())+1
+	if append: count = len(sh.worksheet(sheet_name).col_values(1))+1
 	# print(count)
 	#if append: return
 	for letter,(ind,col) in zip(string.ascii_uppercase, pull_csv.iteritems()):
@@ -37,7 +37,12 @@ def save_gspread(worksheet, pull_csv, append=False):
 			'values': [["" if pd.isna(i) else i] for i in (col.values)],
 	})
 	# print(sheet_update)
-	worksheet.batch_update(sheet_update, value_input_option='USER_ENTERED')
+	row_count = sh.worksheet(sheet_name).row_count
+	if pull_csv.shape[0]+count-1>row_count:
+		sh.worksheet(sheet_name).add_rows( (pull_csv.shape[0]+count-1)-row_count )
+	sh.worksheet(sheet_name).batch_update(sheet_update, value_input_option='USER_ENTERED')
+
+
 
 
 def save_pull_request_csv(pull_requests, 
