@@ -37,7 +37,7 @@ def save_gspread(worksheet, pull_csv, append=False):
 			'values': [["" if pd.isna(i) else i] for i in (col.values)],
 	})
 	# print(sheet_update)
-	worksheet.batch_update(sheet_update)
+	worksheet.batch_update(sheet_update, value_input_option='USER_ENTERED')
 
 
 def save_pull_request_csv(pull_requests, 
