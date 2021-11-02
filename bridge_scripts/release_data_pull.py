@@ -15,13 +15,13 @@ accepted_headers = [
 def get_release_dict(text, is_mobile):
   soup = BeautifulSoup(text.text, 'html.parser')
 
-  header = soup.find(class_="release-header")
+  header = soup.find(class_="d-flex flex-row flex-wrap color-text-secondary flex-items-end") # I think this is the new correct header class
 
   body = soup.find(class_='markdown-body')
 
   try:
     release = {'link-container':{'links': []}} if is_mobile else {}
-    release_version = str(header.find('a').string)
+    release_version = header.find(class_='ml-1').string.strip() # Gets release version from HTML element
     release['version'] = release_version
     cur_header = None
   except:
