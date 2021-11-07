@@ -115,8 +115,8 @@ def get_release_dict(text, is_mobile):
   release['file_list'] = '\n  '.join(fileList)
 
 #   date = soup.find('relative-time').attrs or {}
-    date = soup.find('local-time').attrs or {}
-    release['Date'] = date.get('datetime', '')
+  date = soup.find('local-time').attrs or {}
+  release['Date'] = date.get('datetime', '')
 
 
   return release, release_order
