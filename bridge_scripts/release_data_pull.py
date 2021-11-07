@@ -99,7 +99,7 @@ def get_release_dict(text, is_mobile):
 
   base_url='https://github.com'
   print(header)
-#   version_info = [h for h in header.find_all(class_='Link--muted') if 'title' not in h.attrs.keys()][0]
+  version_info = [h for h in header.find_all(class_='Link--muted') if 'title' not in h.attrs.keys()][1]
   
 
   release['commit_id'] = str(version_info.find('code').string)
