@@ -20,7 +20,7 @@ def get_release_dict(text, is_mobile):
 
   try:
     release = {'link-container':{'links': []}} if is_mobile else {}
-    release_version = str(header.(class_='ml-1').text.strip())
+    release_version = str(header.find(class_='ml-1').text.strip())
     release['version'] = release_version
     cur_header = None
   except:
