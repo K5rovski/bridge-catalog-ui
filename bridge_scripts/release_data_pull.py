@@ -98,7 +98,6 @@ def get_release_dict(text, is_mobile):
 
 
   base_url='https://github.com'
-  print(header)
   version_info = [h for h in header.find_all(class_='Link--muted') if 'title' not in h.attrs.keys()][1]
   
 
@@ -115,8 +114,9 @@ def get_release_dict(text, is_mobile):
 
   release['file_list'] = '\n  '.join(fileList)
 
-  date = soup.find('relative-time').attrs or {}
-  release['Date'] = date.get('datetime', '')
+#   date = soup.find('relative-time').attrs or {}
+    date = soup.find('local-time').attrs or {}
+    release['Date'] = date.get('datetime', '')
 
 
   return release, release_order
