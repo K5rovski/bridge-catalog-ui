@@ -68,8 +68,11 @@ def get_files_pull_request(pullink):
         if not 'title' in atag.attrs:
             continue
         files.append(atag.attrs['title'])
-    date = soup.find('relative-time').attrs or {}
-#     print(date)
+    date = soup.find('relative-time')
+    if not date:
+        date = soup.find('local-time')
+    date = date.attrs or {}
+#   print(date)
 
     return '\n'.join(files), date.get('datetime', '')
     
