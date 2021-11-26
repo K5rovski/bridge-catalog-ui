@@ -68,8 +68,11 @@ def get_files_pull_request(pullink):
         if not 'title' in atag.attrs:
             continue
         files.append(atag.attrs['title'])
-    date = soup.find('relative-time').attrs or {}
-#     print(date)
+    date = soup.find('relative-time')
+    if not date:
+        date = soup.find('local-time')
+    date = date.attrs or {}
+#   print(date)
 
     return '\n'.join(files), date.get('datetime', '')
     
@@ -102,7 +105,7 @@ def get_pull_requests(release_list):
         
 
         if ind_release and ind_release%30==0:
-            with open('pull-{}.data'.format(ind_release), 'wb') as f:
+            with open('pull-{}.data'.format(ind_release+1), 'wb') as f:
                 f.write(msgpack.packb(pull_requests))
         
         rr = {}
@@ -122,7 +125,7 @@ def get_pull_requests(release_list):
                 k = tuple(pull)[0]
                 v = pull[k]
                 print('{}/{} of pull {}, of release {}-{}    \n'.format(indp,len(link_list) , k,
-                                                                       ind_release, len(release_list)), end='')
+                                                                       ind_release+1, len(release_list)), end='')
                 try:
                     files, date = get_files_pull_request(v)
                     sleep(1.5)

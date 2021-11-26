@@ -2,26 +2,25 @@ import requests as req
 from bs4 import BeautifulSoup
 import traceback
 
-accepted_headers = [
+accepted_headers = {
     '🐛 Bug fixes',
     '🚀 Improvements',
     '🎉 New features',
     '👩\u200d💻👨\u200d💻 Contributors 😍',
     '👩\u200d💻👨\u200d💻 Core Team 🤓',
     'Engine versions'
-    
-]
+}
 
 def get_release_dict(text, is_mobile):
   soup = BeautifulSoup(text.text, 'html.parser')
 
-  header = soup.find(class_="d-flex flex-row flex-wrap color-text-secondary flex-items-end") # I think this is the new correct header class
+  header = soup.find(class_="d-flex flex-row flex-wrap color-text-secondary flex-items-end")
 
   body = soup.find(class_='markdown-body')
 
   try:
     release = {'link-container':{'links': []}} if is_mobile else {}
-    release_version = header.find(class_='ml-1').string.strip() # Gets release version from HTML element
+    release_version = str(header.find(class_='ml-1').text.strip())
     release['version'] = release_version
     cur_header = None
   except:
@@ -32,7 +31,7 @@ def get_release_dict(text, is_mobile):
   if not body:
     commit_desc = soup.find(class_='commit-desc')
     if commit_desc:
-      release['description'] = ''.join(list(commit_desc.strings)).strip()    
+      release['description'] = ''.join(list(commit_desc.strings)).strip()
     
     body = BeautifulSoup('<div>Body</div>', 'html.parser')
 
@@ -99,7 +98,8 @@ def get_release_dict(text, is_mobile):
 
 
   base_url='https://github.com'
-  version_info = [h for h in header.find_all(class_='Link--muted') if 'title' not in h.attrs.keys()][0]
+  version_info = [h for h in header.find_all(class_='Link--muted') if 'title' not in h.attrs.keys()][1]
+  
 
   release['commit_id'] = str(version_info.find('code').string)
   release['commit_link'] = base_url+version_info.attrs['href']
@@ -114,7 +114,10 @@ def get_release_dict(text, is_mobile):
 
   release['file_list'] = '\n  '.join(fileList)
 
-  date = soup.find('relative-time').attrs or {}
+  date = soup.find('relative-time')
+  if not date:
+    date = soup.find('local-time')
+  date = date.attrs or {}
   release['Date'] = date.get('datetime', '')
 
 
