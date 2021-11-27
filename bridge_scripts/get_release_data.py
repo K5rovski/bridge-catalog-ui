@@ -14,7 +14,11 @@ accepted_headers = {
 def get_release_dict(text, is_mobile):
   soup = BeautifulSoup(text.text, 'html.parser')
 
-  header = soup.find(class_="d-flex flex-row flex-wrap color-text-secondary flex-items-end")
+  header = soup.select('.d-flex.flex-row.flex-wrap.flex-items-end')
+  if len(header) != 1:
+    raise Exception('No header element found')
+  
+  header = header[0]
 
   body = soup.find(class_='markdown-body')
 
