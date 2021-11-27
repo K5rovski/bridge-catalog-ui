@@ -1,9 +1,9 @@
 from time import sleep
 import requests as req
-from bridge_scripts.list_releases_pull import get_list_tags
-from bridge_scripts.release_data_pull import get_release_dict
+from bridge_scripts.list_tags import get_list_tags
+from bridge_scripts.get_release_data import get_release_dict
 from bridge_scripts.save_dataframe import save_pull_request_csv
-from bridge_scripts.pull_request_data import get_pull_requests
+from bridge_scripts.get_pull_requests import get_pull_requests
 
 base_url = 'https://github.com/RocketChat/Rocket.Chat/tags'
 # base_url = 'https://github.com/RocketChat/Rocket.Chat.ReactNative/tags'
