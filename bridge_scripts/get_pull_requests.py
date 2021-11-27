@@ -1,11 +1,12 @@
 import re
+import msgpack
 import requests as req
 from bs4 import BeautifulSoup
 from time import sleep
 
     
 data_cols = ['🎉 New features', '🚀 Improvements', 
-'🐛 Bug fixes', 'link-container']
+'🐛 Bug fixes', 'link-container', 'header']
 
 team_cols = [
 '👩\u200d💻👨\u200d💻 Contributors 😍',
@@ -14,10 +15,13 @@ team_cols = [
 version_cols = ['Node', 'NPM', 'MongoDB', 'Apps-Engine']
 DEFAULT_STATUS_CODE = '78'
 
-def clean_string(st):
+def clean_column_name(st):
   pass
   nst = re.findall(r'[a-zA-Z0-9: ]+', st)
-  return ''.join(nst).strip()
+  clean = ''.join(nst).strip()
+  if clean == 'header':
+      clean = 'General'
+  return clean
 
 def unwrap_json_columns(dikt,unwrap_cols=[], concat_cols=['links']):
   dikt_unwrap = {}
@@ -142,7 +146,7 @@ def get_pull_requests(release_list):
                                     'Repository': repo_name,
                                      'Date Submitted': date,
                                         'PR Key': pull_id,
-                        'Pull Request Type': 'Mobile' if is_mobile else clean_string(content_column),
+                        'Pull Request Type': 'Mobile' if is_mobile else clean_column_name(content_column),
                         'Status':DEFAULT_STATUS_CODE }})
                     pull_file_info[info_key].update({kk.replace('-', ' '):vv 
                                                     for kk,vv in rr1.items() if kk in version_cols})
